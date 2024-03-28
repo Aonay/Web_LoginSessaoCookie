@@ -96,7 +96,7 @@
   
   <div class="fundologin">
 
-    <form method="post" >
+    <form method="post" action="#">
       <img class="mb-4" src="../assets/brand/logonovo.jpg" alt="" width="72" height="72">
       <h1 class="h3 mb-3 fw-normal">Use seu e-mail para entrar</h1>
   
@@ -126,3 +126,24 @@
     
   </body>
 </html>
+
+<?php
+
+if($_POST){
+  $email = $_POST['txtEmail'];
+  $senha = $_POST['txtSenha'];
+  
+  if(isset($_POST['lembrar'])){
+    setcookie('login_email',$email,time()+(8400*30));
+  }
+}
+
+session_start();
+ 
+if(isset($_POST['txtEmail'],$_POST['txtSenha'])){
+  if($email=='usuario@email.com' && $senha=='senha123'){
+      $_SESSION
+  }
+}
+
+?>
