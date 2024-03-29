@@ -10,7 +10,34 @@ if(!isset($_SESSION['usuario']) || (time() - 1800 >$_SESSION['hora']) ){
   header('Location: index.php');
 }
 
+
+
 ?>
+
+<?php
+      if(isset($_POST['titulo']) && isset($_POST['anotacao'])){
+        $nome_arquivo = $_POST['titulo'];
+        $conteudo = $_POST['anotacao']; 
+        $arquivo = "./anotacoes/". $nome_arquivo .".txt";
+        $texto = $conteudo;
+        $arquivo_aberto = fopen($arquivo, 'a');
+
+        if(fwrite($arquivo_aberto, $texto) === false){
+            die("Não foi possivel escrever no arquivo");
+        }
+        fclose($arquivo_aberto);
+        $arquivo_leitura = fopen($arquivo, 'r');
+        $conteudo_arquivo_leitura = fread($arquivo_leitura, filesize($arquivo));
+        fclose($arquivo_leitura);
+      }
+        if(isset($_POST['delete'])) {
+        $path = "./anotacoes/";
+        $arquivo = $path.$_POST['delete'];
+        if(file_exists($arquivo)) {
+            unlink($arquivo);
+        }
+      }
+ ?>
 
 <!doctype html>
 <html lang="pt-br">
@@ -54,10 +81,30 @@ if(!isset($_SESSION['usuario']) || (time() - 1800 >$_SESSION['hora']) ){
 
 
         <div class="card">
-            <div class="card-body ">
-              <h5 class="card-title">Título</h5>
-              <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta, nemo? Aspernatur consequuntur nam, voluptates sequi deleniti, natus excepturi accusantium, aliquam incidunt aut soluta eos temporibus molestiae reprehenderit odit voluptas tempora!.</p>
-              <a href="#" class="btn btn-danger">Excluir</a>
+            <div class="card-body">
+              <h5 class="card-title">MINHAS ANOTAÇÕES</h5>
+              <?php
+                  $path = "./anotacoes/";
+                  $diretorio = dir($path);
+                  while ($arquivo = $diretorio->read()) {
+                    if (str_contains($arquivo, '.txt')) {
+                      $arquivo_aberto = fopen($path.$arquivo, 'r');
+                      $anotacao = fread($arquivo_aberto, filesize($path . $arquivo)); 
+                      fclose($arquivo_aberto);
+                      echo '<div class="card-body bg-secondary-subtle rounded-2 m-1">';
+                                  echo '<h1 class="card-title pricing-card-title">'. $arquivo .'</h1>';
+                                  echo '<p>'. $anotacao.'</p>';
+                                  echo '<form style="height:25px" method="post">';
+                                  //anotacoes/delete
+                                  echo '<input type="hidden" name="delete" value = "'. $arquivo .'">';
+                                  echo '<div class="d-flex justify-content-end">';
+                                  echo '<button type="submit" class="w-10 btn   btn-danger ">Excluir</button>';
+                                  echo '</div>';
+                                  echo '</form>';
+                                  echo '<br>';
+                                  echo '</div>';
+                    }}
+          ?>
             </div>
           </div>
         
@@ -68,7 +115,7 @@ if(!isset($_SESSION['usuario']) || (time() - 1800 >$_SESSION['hora']) ){
       
       <div class="col-md bg-success rounded">
 
-          <form>
+          <form  class="form" method="post" action="">
             <div class="mb-3 position-relative top-50 start-50 translate-middle">
               
               <div class="form-floating mb-4">
@@ -82,7 +129,7 @@ if(!isset($_SESSION['usuario']) || (time() - 1800 >$_SESSION['hora']) ){
               </div>
               
               <div class="d-grid">
-                <button class="btn btn-primary" type="submit">Criar Anotação</button>
+                <button class="btn btn-primary" type="submit" name="enviar" id="enviar">Criar Anotação</button>
               </div>
 
             </div> 
@@ -98,23 +145,13 @@ if(!isset($_SESSION['usuario']) || (time() - 1800 >$_SESSION['hora']) ){
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
           
-
+    <img src="./anotacoes/" alt="">
 </body>
 
 </html>
 
 
-<?php
-    extract($_REQUEST);
-    $file=fopen($_SERVER['DOCUMENT_ROOT'] . "/sign-in/anotacoes/$titulo.txt","a");
 
-    fwrite($file,"Título :");
-    fwrite($file, $titulo ."\n");
-    fwrite($file,"Anotação :");
-    fwrite($file, $anotacao ."\n");
-    fclose($file);
-
- ?>
 
 
 
