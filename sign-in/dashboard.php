@@ -1,5 +1,19 @@
+<?php
+
+session_start();
+
+
+
+if(!isset($_SESSION['usuario']) || (time() - 1800 >$_SESSION['hora']) ){
+  session_unset();
+  session_destroy();
+  header('Location: index.php');
+}
+
+?>
+
 <!doctype html>
-<html lang="en">
+<html lang="pt-br">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,8 +37,12 @@
         </ul>
 
         <div class="text-end">
-          <button type="button" class="btn btn-outline-light me-2">Meu Usuário</button>
-          <button type="button" class="btn btn-warning">Sign-up</button>
+          <button type="button" class="btn btn-outline-light me-2"><?php echo $_SESSION['usuario']?></button>
+          <a href="logout.php">
+            <button type="button" name="sair" class="btn btn-warning">Sair</button>
+          </a>
+          
+
         </div>
       </div>
     </div>
@@ -88,7 +106,7 @@
 
 <?php
     extract($_REQUEST);
-    $file=fopen($_SERVER['DOCUMENT_ROOT'] . "/anotacoes/$titulo.txt","a");
+    $file=fopen($_SERVER['DOCUMENT_ROOT'] . "/sign-in/anotacoes/$titulo.txt","a");
 
     fwrite($file,"Título :");
     fwrite($file, $titulo ."\n");

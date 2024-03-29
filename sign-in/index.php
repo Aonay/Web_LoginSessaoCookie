@@ -145,7 +145,7 @@ if(isset($_POST['txtEmail'],$_POST['txtSenha'])){
   if($email=='usuario@email.com' && $senha=='senha123'){
       $_SESSION['usuario']=$email;
       $_SESSION['hora']=time();
-      header('Location: dashboard_teste.php');
+      header('Location: dashboard.php');
   }else{
     echo "<script>alert('Usuário e/ou senha inválido(s), Tente novamente!');</script>";
   }
